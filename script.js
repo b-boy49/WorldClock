@@ -30,6 +30,7 @@ const timerStatus = document.getElementById("timerStatus");
 const alertCountry = document.getElementById("alertCountry");
 const alertCurrentRate = document.getElementById("alertCurrentRate");
 const alertDirection = document.getElementById("alertDirection");
+const alertEmail = document.getElementById("alertEmail");
 const alertTargetRate = document.getElementById("alertTargetRate");
 const alertAddBtn = document.getElementById("alertAddBtn");
 const alertDeleteCheckedBtn = document.getElementById("alertDeleteCheckedBtn");
@@ -52,8 +53,9 @@ const cityElements = new Map();
 const fxRates = new Map();
 const fxAlerts = [];
 const ALERT_LIMIT = 50;
-const ALERT_EMAIL_TO = "b.boy4273@gmail.com";
+const DEFAULT_ALERT_EMAIL_TO = "b.boy4273@gmail.com";
 const ALERT_STORAGE_KEY = "worldclock_fx_alerts_v1";
+let alertEmailTo = DEFAULT_ALERT_EMAIL_TO;
 
 function formatInTimezone(date, timezone, options) {
   return new Intl.DateTimeFormat("ja-JP", { timeZone: timezone, ...options }).format(date);
@@ -142,6 +144,7 @@ function saveAlertState() {
   const payload = {
     alertCityName,
     alertIdSequence,
+    alertEmailTo,
     fxAlerts
   };
   localStorage.setItem(ALERT_STORAGE_KEY, JSON.stringify(payload));
@@ -164,9 +167,21 @@ function loadAlertState() {
     if (parsed && typeof parsed.alertCityName === "string") {
       alertCityName = parsed.alertCityName;
     }
+    if (parsed && typeof parsed.alertEmailTo === "string") {
+      alertEmailTo = parsed.alertEmailTo.trim() || DEFAULT_ALERT_EMAIL_TO;
+    }
   } catch {
     // ignore broken saved data
   }
+}
+
+function isLikelyEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function syncAlertEmailInput() {
+  if (!alertEmail) return;
+  alertEmail.value = alertEmailTo;
 }
 
 function getSelectedCity() {
@@ -280,9 +295,14 @@ function playFxAlertWarningSound() {
 }
 
 function openMailDraft(text) {
+  const destination = String(alertEmailTo || "").trim();
+  if (!isLikelyEmail(destination)) {
+    setNotice("通知先メールアドレスを正しく入力してください");
+    return;
+  }
   const subject = encodeURIComponent("WorldClock 為替アラート通知");
-  const body = encodeURIComponent(`${text}\n\n送信先: ${ALERT_EMAIL_TO}`);
-  const link = `mailto:${ALERT_EMAIL_TO}?subject=${subject}&body=${body}`;
+  const body = encodeURIComponent(`${text}\n\n送信先: ${destination}`);
+  const link = `mailto:${destination}?subject=${subject}&body=${body}`;
   const anchor = document.createElement("a");
   anchor.href = link;
   anchor.style.display = "none";
@@ -676,6 +696,17 @@ function bindEvents() {
     updateAlertForm(true);
     saveAlertState();
   });
+  alertEmail.addEventListener("change", () => {
+    alertEmailTo = alertEmail.value.trim() || DEFAULT_ALERT_EMAIL_TO;
+    saveAlertState();
+  });
+  alertEmail.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      alertEmailTo = alertEmail.value.trim() || DEFAULT_ALERT_EMAIL_TO;
+      saveAlertState();
+      setNotice(`通知先を保存: ${alertEmailTo}`);
+    }
+  });
   alertTargetRate.addEventListener("keydown", (event) => {
     if (event.key === "Enter") addFxAlert();
   });
@@ -702,6 +733,7 @@ function init() {
   alarmStatus.textContent = `未設定 (現在: ${currentHmInSelectedTimezone()})`;
   renderTimer();
   updateAlertForm(true);
+  syncAlertEmailInput();
   updateAlertStatus();
   renderAlertList();
 }
