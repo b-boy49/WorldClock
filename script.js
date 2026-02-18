@@ -53,7 +53,7 @@ const cityElements = new Map();
 const fxRates = new Map();
 const fxAlerts = [];
 const ALERT_LIMIT = 50;
-const DEFAULT_ALERT_EMAIL_TO = "b.boy4273@gmail.com";
+const DEFAULT_ALERT_EMAIL_TO = "";
 const ALERT_STORAGE_KEY = "worldclock_fx_alerts_v1";
 let alertEmailTo = DEFAULT_ALERT_EMAIL_TO;
 
@@ -697,14 +697,14 @@ function bindEvents() {
     saveAlertState();
   });
   alertEmail.addEventListener("change", () => {
-    alertEmailTo = alertEmail.value.trim() || DEFAULT_ALERT_EMAIL_TO;
+    alertEmailTo = alertEmail.value.trim();
     saveAlertState();
   });
   alertEmail.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
-      alertEmailTo = alertEmail.value.trim() || DEFAULT_ALERT_EMAIL_TO;
+      alertEmailTo = alertEmail.value.trim();
       saveAlertState();
-      setNotice(`通知先を保存: ${alertEmailTo}`);
+      setNotice(alertEmailTo ? `通知先を保存: ${alertEmailTo}` : "通知先を空欄にしました");
     }
   });
   alertTargetRate.addEventListener("keydown", (event) => {
@@ -721,6 +721,7 @@ function tick() {
 function init() {
   initRightFigureImage();
   loadAlertState();
+  alertEmailTo = "";
   syncAlertCountrySelect();
   createCityClocks();
   bindEvents();
@@ -734,6 +735,7 @@ function init() {
   renderTimer();
   updateAlertForm(true);
   syncAlertEmailInput();
+  saveAlertState();
   updateAlertStatus();
   renderAlertList();
 }
