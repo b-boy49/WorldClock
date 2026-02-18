@@ -1,0 +1,373 @@
+﻿:root {
+  --bg: #0b2f57;
+  --panel: rgba(6, 24, 44, 0.82);
+  --line: rgba(124, 206, 255, 0.36);
+  --text: #dbf4ff;
+  --blue-neon: #ffe45c;
+  --plus-neon: #6cff8f;
+  --minus-neon: #ff4c5b;
+  --font: "Consolas", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: radial-gradient(circle at 18% 16%, #74e4ff 0%, #2d8fff 34%, var(--bg) 68%, #06213d 100%);
+}
+
+.right-figure {
+  position: fixed;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  pointer-events: none;
+}
+
+#rightFigureImg {
+  width: min(28vw, 300px);
+  max-height: 82vh;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
+}
+
+.app {
+  width: min(1250px, 96vw);
+  margin: 12px auto 24px;
+  padding-right: 0;
+}
+
+.top-display {
+  text-align: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 0 14px rgba(87, 190, 255, 0.2);
+}
+
+.top-display .label {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+#mainDate,
+#mainTime {
+  margin: 4px 0;
+  color: var(--blue-neon);
+  text-shadow: 0 0 7px #ffe45c, 0 0 20px rgba(255, 228, 92, 0.95);
+}
+
+#mainDate {
+  font-size: clamp(1.4rem, 3.4vw, 2.6rem);
+}
+
+#mainTime {
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.1em;
+}
+
+#mainZone {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+.controls {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 10px;
+}
+
+.panel h3 {
+  margin: 0 0 8px;
+  color: #87ddff;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.88rem;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  background: #021224;
+  border: 1px solid #2d739d;
+  color: var(--text);
+  font-family: var(--font);
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  background: #021224;
+  border: 1px solid #2d739d;
+  color: var(--text);
+  font-family: var(--font);
+}
+
+button {
+  margin-top: 8px;
+  margin-right: 6px;
+  padding: 8px 12px;
+  border: 1px solid #56afff;
+  background: #02253f;
+  color: #d8f1ff;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.15);
+}
+
+button.ghost {
+  border-color: #64839b;
+  background: #1b2d3a;
+}
+
+#alarmStatus,
+#timerStatus {
+  margin: 8px 0 0;
+}
+
+.timer-panel {
+  border-color: #7fd4ff;
+  box-shadow: 0 0 14px rgba(87, 190, 255, 0.24);
+  background: rgba(6, 31, 56, 0.92);
+}
+
+.timer-panel h3 {
+  color: #b7ecff;
+}
+
+.timer-panel #timerInput {
+  border-color: #79c9ff;
+  background: #052443;
+  font-size: 1rem;
+}
+
+.timer-panel button {
+  font-size: 0.95rem;
+  padding: 9px 14px;
+}
+
+#timerStatus {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #d5f4ff;
+  text-shadow: 0 0 8px rgba(124, 224, 255, 0.95);
+}
+
+.alert-panel {
+  border-color: #78d8ff;
+}
+
+#alertStatus {
+  margin: 8px 0;
+}
+
+.alert-screen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.live-alert {
+  width: min(86vw, 760px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px;
+  border: 2px solid #ffd33d;
+  background: linear-gradient(135deg, rgba(70, 8, 8, 0.96), rgba(145, 24, 24, 0.96));
+  box-shadow: 0 0 30px rgba(255, 61, 46, 0.75);
+  pointer-events: auto;
+  animation: alert-blink 0.85s steps(2, end) infinite;
+}
+
+.live-alert span {
+  font-size: clamp(1.05rem, 2.6vw, 1.6rem);
+  line-height: 1.35;
+  color: #fff27a;
+  text-shadow: 0 0 8px rgba(255, 230, 122, 0.95), 0 0 18px rgba(255, 72, 56, 0.8);
+}
+
+@keyframes alert-blink {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.58;
+    transform: scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.alert-list {
+  display: grid;
+  gap: 6px;
+}
+
+.alert-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid #315d77;
+  padding: 6px;
+  background: rgba(1, 20, 35, 0.76);
+}
+
+.alert-row.done {
+  opacity: 0.72;
+}
+
+.alert-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.alert-meta {
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.map-wrap {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 10px;
+}
+
+.world-map {
+  position: relative;
+  width: 100%;
+  min-height: 65vh;
+  background-image:
+    linear-gradient(rgba(4, 18, 33, 0.2), rgba(4, 18, 33, 0.5)),
+    url("https://commons.wikimedia.org/wiki/Special:FilePath/World_pacific_centered.svg");
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(93, 180, 231, 0.35);
+  overflow: hidden;
+}
+
+.city-clock {
+  position: absolute;
+  min-width: 170px;
+  text-align: left;
+  padding: 7px;
+  border: 1px solid #7fb4d6;
+  background: rgba(0, 19, 36, 0.85);
+}
+
+.city-clock.active {
+  border-color: #8ef0ff;
+  box-shadow: 0 0 10px rgba(142, 240, 255, 0.7);
+}
+
+.city-name,
+.city-time,
+.city-diff,
+.city-rate {
+  display: block;
+}
+
+.city-name {
+  font-weight: 700;
+  color: #c5ecff;
+}
+
+.city-time {
+  margin-top: 2px;
+  font-size: 1.15rem;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.55);
+}
+
+.city-diff.plus {
+  color: var(--plus-neon);
+  text-shadow: 0 0 5px rgba(108, 255, 143, 0.95);
+}
+
+.city-diff.minus {
+  color: var(--minus-neon);
+  text-shadow: 0 0 5px rgba(255, 76, 91, 0.95);
+}
+
+.city-diff.zero {
+  color: #f2f2f2;
+}
+
+.city-rate {
+  margin-top: 2px;
+  color: #9fdcff;
+  font-size: 0.84rem;
+}
+
+.note {
+  margin: 8px 0 0;
+  opacity: 0.86;
+  font-size: 0.82rem;
+}
+
+.notice {
+  min-height: 1.2em;
+  margin: 6px 0 0;
+  color: #fff8aa;
+}
+
+@media (max-width: 780px) {
+  .right-figure {
+    right: 8px;
+    top: auto;
+    bottom: 8px;
+    transform: none;
+  }
+
+  #rightFigureImg {
+    width: min(38vw, 170px);
+    max-height: 38vh;
+    opacity: 0.9;
+  }
+
+  .app {
+    padding-right: 0;
+  }
+
+  .world-map {
+    min-height: 75vh;
+    background-position: center;
+  }
+
+  .city-clock {
+    min-width: 145px;
+    transform: scale(0.93);
+    transform-origin: top left;
+  }
+}
